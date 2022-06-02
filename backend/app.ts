@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'production') {
 app.get('*', (req: Request, res: Response) => {
   res.status(404).send('Not Found');
 });
-
-app.listen(process.env.PORT || 4000, () => {
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
   console.log(`API is running on port: 4000`);
 });
