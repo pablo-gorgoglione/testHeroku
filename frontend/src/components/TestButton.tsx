@@ -11,9 +11,16 @@ const TestButton = () => {
     const res = await axios.get('http://localhost:4000/api/v1/names');
     setNames(res.data.data);
   };
+  const handleClick2 = async () => {
+    const res = await axios.get(
+      'https://ensolvers-pablo-gorgoglione.herokuapp.com/api/v1/names'
+    );
+    setNames(res.data.data);
+  };
   return (
     <>
       <Button onClick={handleClick}>Fetch Data</Button>
+      <Button onClick={handleClick2}>Fetch Data 2</Button>
       <Button
         onClick={() => {
           console.log(names);
