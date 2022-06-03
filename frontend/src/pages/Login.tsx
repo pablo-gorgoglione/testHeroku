@@ -1,6 +1,4 @@
-interface Props {}
-
-const Login = ({}: Props) => {
+const Login = () => {
   return <></>;
 };
 
