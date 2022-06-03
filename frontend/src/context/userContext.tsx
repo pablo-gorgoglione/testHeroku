@@ -45,6 +45,7 @@ export const UserProdiver = ({ children }: props) => {
         dispatch({ type: 'SET_ERROR', payload: 'Error trying to login' });
       }
     };
+
     if (token) {
       checkIfTokenIsValid();
     }
@@ -82,6 +83,7 @@ export const UserProdiver = ({ children }: props) => {
 
   const logout = () => {
     try {
+      cookies.remove('token');
       dispatch({ type: 'RESET' });
     } catch (error) {
       dispatch({ type: 'SET_ERROR', payload: 'Error trying to logout' });

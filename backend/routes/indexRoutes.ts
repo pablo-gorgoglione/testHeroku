@@ -6,7 +6,6 @@ const router = Router();
 
 router.use('/users', userRoutes);
 router.use('/notes', notesRoutes);
-
 router.use('/category', categoryRoutes);
 
 export default router;

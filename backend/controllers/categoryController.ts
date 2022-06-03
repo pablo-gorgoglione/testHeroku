@@ -5,13 +5,13 @@ import Category from '../models/catModel';
 // @route GET /category/
 export const getCategories = asyncHandler(
   async (req: Request, res: Response) => {
-    const categories = Category.find({});
+    const categories = await Category.find({});
     res.json(categories);
+    return;
   }
 );
 
 // @route POST /category/
-
 export const postCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { name } = req.body;
@@ -21,6 +21,7 @@ export const postCategory = asyncHandler(
     const category = await Category.create({ name });
 
     res.status(201).json(category.toJSON());
+    return;
   }
 );
 
@@ -38,6 +39,7 @@ export const deleteCategory = asyncHandler(
     }
     await category.delete();
     res.json({ message: 'Category deleted.' });
+    return;
   }
 );
 

@@ -1,4 +1,3 @@
-import Category from '../models/categoryModel';
 import connectDb from './db';
 import dotenv from 'dotenv';
 

@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { INote } from '../types';
 
 const NoteSchema = new Schema<INote>(
   {

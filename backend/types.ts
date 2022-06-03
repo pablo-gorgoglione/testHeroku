@@ -1,15 +1,15 @@
-interface IUser {
+export interface IUser {
   username: string;
   password: string;
 }
 
-interface INote {
+export interface INote {
   title: string;
   content: string;
   archived: boolean;
   categories: Array<ICategory>;
 }
 
-interface ICategory {
+export interface ICategory {
   name: string;
 }

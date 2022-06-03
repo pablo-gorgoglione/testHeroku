@@ -17,8 +17,9 @@ const express_async_handler_1 = __importDefault(require("express-async-handler")
 const catModel_1 = __importDefault(require("../models/catModel"));
 // @route GET /category/
 exports.getCategories = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const categories = catModel_1.default.find({});
+    const categories = yield catModel_1.default.find({});
     res.json(categories);
+    return;
 }));
 // @route POST /category/
 exports.postCategory = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,6 +29,7 @@ exports.postCategory = (0, express_async_handler_1.default)((req, res) => __awai
     }
     const category = yield catModel_1.default.create({ name });
     res.status(201).json(category.toJSON());
+    return;
 }));
 // @route DELETE /category/
 exports.deleteCategory = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -41,6 +43,7 @@ exports.deleteCategory = (0, express_async_handler_1.default)((req, res) => __aw
     }
     yield category.delete();
     res.json({ message: 'Category deleted.' });
+    return;
 }));
 // @route GET /category/seed
 exports.seedCategory = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

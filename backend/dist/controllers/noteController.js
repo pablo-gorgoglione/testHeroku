@@ -17,16 +17,22 @@ const express_async_handler_1 = __importDefault(require("express-async-handler")
 const noteModel_1 = __importDefault(require("../models/noteModel"));
 // @route GET /notes/
 exports.getNotesNotArchived = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const notes = yield noteModel_1.default.find({ archived: false }).populate({
+    const notes = yield noteModel_1.default.find({ archived: false })
+        .populate({
         path: 'categories',
         select: 'name',
+    })
+        .sort({
+        updatedAt: 'desc',
     });
     res.json(notes);
+    return;
 }));
 // @route GET /notes/archived
 exports.getNotesArchived = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const notes = noteModel_1.default.find({ archived: true });
     res.json(notes);
+    return;
 }));
 // @route POST /notes/
 exports.postNote = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -34,6 +40,7 @@ exports.postNote = (0, express_async_handler_1.default)((req, res) => __awaiter(
     valiteNoteBody(req);
     const note = yield noteModel_1.default.create({ title, content, categories });
     res.status(201).json(note.toJSON());
+    return;
 }));
 // @route PUT /notes/:id
 exports.putNote = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,12 +52,14 @@ exports.putNote = (0, express_async_handler_1.default)((req, res) => __awaiter(v
     note.categories = categories ? categories : note.categories;
     yield note.save();
     res.json(note);
+    return;
 }));
 // @route DELETE /notes/:id
 exports.deleteNote = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const note = yield validateExistence(req.params.id);
     yield note.delete();
     res.json({ message: 'Note deleted.' });
+    return;
 }));
 // @desc Validates the data from the body
 const valiteNoteBody = (req) => {
@@ -58,9 +67,9 @@ const valiteNoteBody = (req) => {
     if (!title) {
         throw new Error('A title is requiered.');
     }
-    if (!categories) {
-        throw new Error('At least one category is requiered.');
-    }
+    // if (!categories) {
+    //   throw new Error('At least one category is requiered.');
+    // }
     if (!content) {
         throw new Error('A content is requiered.');
     }
