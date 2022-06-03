@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import indexRouter from './routes/indexRoutes';
 import connectDb from './utils/db';
+import { errorHandler } from './middlewares/errorHandler';
 
 export const app = express();
 
@@ -50,6 +51,7 @@ if (process.env.NODE_ENV === 'production') {
 app.get('*', (req: Request, res: Response) => {
   res.status(404).send('Not Found');
 });
+app.use(errorHandler);
 
 const port = process.env.PORT || 4000;
 
