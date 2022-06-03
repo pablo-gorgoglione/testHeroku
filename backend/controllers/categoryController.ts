@@ -11,13 +11,13 @@ export const getCategories = asyncHandler(
 );
 
 // @route POST /category/
+
 export const postCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const { name } = req.body;
     if (!name) {
       throw new Error('A name is required for the category.');
     }
-
     const category = await Category.create({ name });
 
     res.status(201).json(category.toJSON());
