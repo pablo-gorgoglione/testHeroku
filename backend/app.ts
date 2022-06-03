@@ -2,9 +2,25 @@ import cors from 'cors';
 import express, { Response, Request } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import indexRouter from './routes/indexRoutes';
+import connectDb from './utils/db';
 
 export const app = express();
+
 dotenv.config();
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+        iat: number;
+        exp: number;
+        name: string;
+      };
+    }
+  }
+}
 
 app.use(
   cors({
@@ -14,15 +30,13 @@ app.use(
   })
 );
 
+connectDb();
 app.use(express.json());
+
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/api/v1/names', (req: Request, res: Response) => {
-  res.json({
-    message: 'This works',
-    data: [{ name: 'Pablo' }, { name: 'Ensolvers' }],
-  });
-});
+app.use('/api', indexRouter);
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../../frontend/build')));
 
@@ -36,7 +50,9 @@ if (process.env.NODE_ENV === 'production') {
 app.get('*', (req: Request, res: Response) => {
   res.status(404).send('Not Found');
 });
+
 const port = process.env.PORT || 4000;
+
 app.listen(port, () => {
-  console.log(`API is running on port: port`);
+  console.log(`API is running on port: ${port}`);
 });

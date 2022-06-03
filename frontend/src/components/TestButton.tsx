@@ -6,28 +6,27 @@ interface namesFromServer {
   name: string;
 }
 const TestButton = () => {
-  const [names, setNames] = useState<namesFromServer[]>([]);
   const handleClick = async () => {
-    const res = await axios.get('http://localhost:4000/api/v1/names');
-    setNames(res.data.data);
+    const res = await axios.post('http://localhost:4000/api/users/login', {
+      username: 'Pablo',
+      password: '12345',
+    });
+    console.log(res);
   };
   const handleClick2 = async () => {
-    const res = await axios.get(
-      'https://ensolvers-pablo-gorgoglione.herokuapp.com/api/v1/names'
+    const res = await axios.post(
+      'https://ensolvers-pablo-gorgoglione.herokuapp.com/api/users/login',
+      {
+        username: 'Pablo',
+        password: '12345',
+      }
     );
-    setNames(res.data.data);
+    console.log(res);
   };
   return (
     <>
-      <Button onClick={handleClick}>Fetch Data</Button>
-      <Button onClick={handleClick2}>Fetch Data 2</Button>
-      <Button
-        onClick={() => {
-          console.log(names);
-        }}
-      >
-        Console log
-      </Button>
+      <Button onClick={handleClick}>Fetch Data Local</Button>
+      <Button onClick={handleClick2}>Fetch Data heroku</Button>
     </>
   );
 };
