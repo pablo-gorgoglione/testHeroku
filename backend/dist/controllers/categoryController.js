@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedCategory = exports.deleteCategory = exports.postCategory = exports.getCategories = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
-const categoryModel_1 = __importDefault(require("../models/categoryModel"));
+const catModel_1 = __importDefault(require("../models/catModel"));
 // @route GET /category/
 exports.getCategories = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const categories = categoryModel_1.default.find({});
+    const categories = catModel_1.default.find({});
     res.json(categories);
 }));
 // @route POST /category/
@@ -26,7 +26,7 @@ exports.postCategory = (0, express_async_handler_1.default)((req, res) => __awai
     if (!name) {
         throw new Error('A name is required for the category.');
     }
-    const category = yield categoryModel_1.default.create({ name });
+    const category = yield catModel_1.default.create({ name });
     res.status(201).json(category.toJSON());
 }));
 // @route DELETE /category/
@@ -35,7 +35,7 @@ exports.deleteCategory = (0, express_async_handler_1.default)((req, res) => __aw
     if (!id) {
         throw new Error('Missing post id');
     }
-    const category = yield categoryModel_1.default.findById(id);
+    const category = yield catModel_1.default.findById(id);
     if (!category) {
         throw new Error('Not category found, invalid');
     }
@@ -44,12 +44,12 @@ exports.deleteCategory = (0, express_async_handler_1.default)((req, res) => __aw
 }));
 // @route GET /category/seed
 exports.seedCategory = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield categoryModel_1.default.deleteMany();
+    yield catModel_1.default.deleteMany();
     yield Promise.all([
-        categoryModel_1.default.create({ name: 'Personal' }),
-        categoryModel_1.default.create({ name: 'Job' }),
-        categoryModel_1.default.create({ name: 'Ideas' }),
-        categoryModel_1.default.create({ name: 'Extras' }),
+        catModel_1.default.create({ name: 'Personal' }),
+        catModel_1.default.create({ name: 'Job' }),
+        catModel_1.default.create({ name: 'Ideas' }),
+        catModel_1.default.create({ name: 'Extras' }),
     ]);
     console.log('Date loaded');
     res.json({ message: 'Category loaded.' });

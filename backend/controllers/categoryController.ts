@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import asyncHandler from 'express-async-handler';
-import Category from '../models/categoryModel';
+import Category from '../models/catModel';
 
 // @route GET /category/
 export const getCategories = asyncHandler(
