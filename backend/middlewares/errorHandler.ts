@@ -9,7 +9,6 @@ const errorHandler = (
   console.error({
     message: `${err.message}`,
     req_url: req.path.toString(),
-    fullError: err,
   });
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode).json({
