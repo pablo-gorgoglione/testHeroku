@@ -71,7 +71,7 @@ const LogedHome = ({ token }: props) => {
     if (typeof result !== 'undefined') {
       if (archived) {
         let tempNotes: INote[] = [];
-        notesFiltered.forEach((n) => {
+        noteState.notes.forEach((n) => {
           n.categories.forEach((c) => {
             if (c._id === result._id) {
               tempNotes.push(n);
@@ -81,7 +81,7 @@ const LogedHome = ({ token }: props) => {
         setNotesFiltered(tempNotes);
       } else {
         let tempNotes: INote[] = [];
-        archivedNotesFiltered.forEach((n) => {
+        noteState.archivedNotes.forEach((n) => {
           n.categories.forEach((c) => {
             if (c._id === result._id) {
               tempNotes.push(n);

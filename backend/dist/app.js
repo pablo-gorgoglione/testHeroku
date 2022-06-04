@@ -22,6 +22,7 @@ exports.app.use((0, cors_1.default)({
 exports.app.use(express_1.default.json());
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use('/api', indexRoutes_1.default);
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
     exports.app.use(express_1.default.static(path_1.default.join(__dirname, '../../frontend/build')));
     exports.app.get('*', (req, res) => {
