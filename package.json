@@ -9,7 +9,7 @@
     "buildFrontend": "cd ./frontend && npm run build",
     "startBackend": "cd ./backend && tsc && npm run seedCategories && node ./dist/app.js",
     "seedCategories": "node ./backend/dist/utils/seed.js",
-    "startOne": "npm run installBoth && npm run buildFrontend && npm run startBackend"
+    "startAll": "npm run installBoth && npm run buildFrontend && npm run startBackend"
   },
   "repository": {
     "type": "git",
