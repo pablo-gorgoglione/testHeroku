@@ -2,8 +2,6 @@ import mongoose from 'mongoose';
 
 const connectDb = async () => {
   try {
-    console.log(process.env.DB_DEV as string);
-    console.log(process.env.NODE_ENV as string);
     let mongoDB =
       process.env.NODE_ENV == 'dev'
         ? (process.env.DB_DEV as string)

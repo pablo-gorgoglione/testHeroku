@@ -35,7 +35,6 @@ export const protect = asyncHandler(
         next();
         return;
       } catch (error) {
-        console.error(error);
         res.status(401);
         throw new Error('Not Authorized, bad token');
       }
