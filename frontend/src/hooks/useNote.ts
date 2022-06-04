@@ -5,7 +5,9 @@ const useNote = (prop_note: INote) => {
   const [note, setNote] = useState(prop_note);
 
   const reset = (note: INote) => {
-    setNote(note);
+    const tempnote = note;
+    tempnote.categories = [];
+    setNote(tempnote);
   };
 
   const handleTitleChange = (e: any) => {

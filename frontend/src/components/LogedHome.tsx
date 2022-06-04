@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Select, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, Select } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { notesApi } from '../api';
 import NoteContext from '../context/noteContext';
@@ -92,6 +92,7 @@ const LogedHome = ({ token }: props) => {
       }
     } else {
       setNotesFiltered(noteState.notes);
+      setArchivedNotesFiltered(noteState.archivedNotes);
     }
   };
 
@@ -129,8 +130,6 @@ const LogedHome = ({ token }: props) => {
     setArchived(!archived);
   };
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <Box>
       <Flex
@@ -153,17 +152,15 @@ const LogedHome = ({ token }: props) => {
               );
             })}
         </Select>
-        <Button onClick={onOpen}>Create note</Button>
+        <CreateModal
+          categoriesGeneral={categories}
+          handleCreateLocal={handleCreateLocal}
+        />
         <Button variant={'outline'} cursor={'pointer'} onClick={toggleArchived}>
           {archived ? 'Archived Notes >' : '< Notes'}
         </Button>
       </Flex>
-      <CreateModal
-        isOpen={isOpen}
-        onClose={onClose}
-        categories={categories}
-        handleCreateLocal={handleCreateLocal}
-      />
+
       <Box
         display={'grid'}
         gridTemplateColumns={['1fr', '1fr 1fr', '1fr 1fr', '1fr 1fr 1fr']}

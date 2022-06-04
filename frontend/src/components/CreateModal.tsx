@@ -12,6 +12,7 @@ import {
   Text,
   Box,
   Alert,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import useNote from '../hooks/useNote';
@@ -19,10 +20,8 @@ import { ICategory, INote } from '../types';
 import CategoryListCards from './CategoryListCards';
 
 interface Props {
-  isOpen: boolean;
-  onClose: () => void;
   handleCreateLocal: (note: INote) => void;
-  categories: ICategory[];
+  categoriesGeneral: ICategory[];
 }
 const initial_note: INote = {
   _id: '',
@@ -34,12 +33,7 @@ const initial_note: INote = {
   updatedAt: '',
 };
 
-const CreateModal = ({
-  isOpen,
-  categories,
-  onClose,
-  handleCreateLocal,
-}: Props) => {
+const CreateModal = ({ categoriesGeneral, handleCreateLocal }: Props) => {
   const {
     note,
     handleContentChange,
@@ -48,13 +42,22 @@ const CreateModal = ({
     addCategory,
     deleteCategory,
   } = useNote(initial_note);
+
   const [cates, setCates] = useState<ICategory[]>([]);
+
   const [error, setError] = useState('');
+
   useEffect(() => {
-    if (categories) {
-      setCates(categories);
+    if (categoriesGeneral) {
+      setCates(categoriesGeneral);
     }
-  }, [categories]);
+  }, [categoriesGeneral]);
+
+  const handleOpenCreate = () => {
+    setCates(categoriesGeneral);
+    reset(initial_note);
+    onOpen();
+  };
 
   const handleDeleteCat = (cat: ICategory) => {
     deleteCategory(cat);
@@ -84,46 +87,50 @@ const CreateModal = ({
     reset(initial_note);
     onClose();
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>Create Note</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Text>Title: </Text>
-          <Input value={note.title} onChange={handleTitleChange}></Input>
-          <Text marginTop={'1rem'}>Content: </Text>
-          <Textarea value={note.content} onChange={handleContentChange} />
-          <Box
-            colorHover={'red'}
-            as={CategoryListCards}
-            deleteCategory={handleDeleteCat}
-            text='In note'
-            categories={note.categories}
-          />
-          <Box
-            colorHover={'green'}
-            as={CategoryListCards}
-            addCategory={handleAddCat}
-            text='Available'
-            categories={cates}
-          />
-          {error && (
-            <Alert marginTop={'1rem'} borderRadius='0.4rem' status='error'>
-              {error}
-            </Alert>
-          )}
-        </ModalBody>
-        <ModalFooter display={'flex'} justifyContent={'space-between'}>
-          <Button onClick={onClose}>Close</Button>
-          <Button colorScheme='blue' onClick={handleCreate}>
-            Create
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <>
+      <Button onClick={handleOpenCreate}>Create note</Button>
+      <Modal onClose={onClose} isOpen={isOpen} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Create Note</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Text>Title: </Text>
+            <Input value={note.title} onChange={handleTitleChange}></Input>
+            <Text marginTop={'1rem'}>Content: </Text>
+            <Textarea value={note.content} onChange={handleContentChange} />
+            <Box
+              colorHover={'red'}
+              as={CategoryListCards}
+              deleteCategory={handleDeleteCat}
+              text='In note'
+              categories={note.categories}
+            />
+            <Box
+              colorHover={'green'}
+              as={CategoryListCards}
+              addCategory={handleAddCat}
+              text='Available'
+              categories={cates}
+            />
+            {error && (
+              <Alert marginTop={'1rem'} borderRadius='0.4rem' status='error'>
+                {error}
+              </Alert>
+            )}
+          </ModalBody>
+          <ModalFooter display={'flex'} justifyContent={'space-between'}>
+            <Button onClick={onClose}>Close</Button>
+            <Button colorScheme='blue' onClick={handleCreate}>
+              Create
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
