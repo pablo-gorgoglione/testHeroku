@@ -8,16 +8,18 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { FaBoxOpen, FaDownload } from 'react-icons/fa';
-import { INote } from '../types';
+import { ICategory, INote } from '../types';
 import AlertDelete from './AlertDelete';
+import CategoryMiniCard from './CategoryMiniCard';
 import EditModal from './EditModal';
 
 interface Props {
   note: INote;
   token: string;
   handleEditNote: (id: string, note: INote) => void;
-  handleDeleteLocal: (id: string) => void;
+  handleDeleteLocal: (id: string, archived: boolean) => void;
   handleToggleArchived: (note: INote) => void;
+  categories: ICategory[];
 }
 
 const NoteCard = ({
@@ -26,6 +28,7 @@ const NoteCard = ({
   handleEditNote,
   handleDeleteLocal,
   handleToggleArchived,
+  categories: categoriesGeneral,
 }: Props) => {
   const { _id, categories, updatedAt, title, archived } = note;
   const [updateTime, setUpdateTime] = useState<Date>(new Date());
@@ -40,7 +43,7 @@ const NoteCard = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDelete = () => {
-    handleDeleteLocal(_id);
+    handleDeleteLocal(_id, archived);
   };
   const handleArchive = () => {
     const tempNote = note;
@@ -49,7 +52,7 @@ const NoteCard = ({
   };
   const renderCategories = () =>
     categories.map((c) => {
-      return <p key={Math.random()}>{c.name}</p>;
+      return <CategoryMiniCard colorHover='white' key={c._id} category={c} />;
     });
 
   return (
@@ -61,6 +64,7 @@ const NoteCard = ({
       transitionDuration='200ms'
     >
       <EditModal
+        categories={categoriesGeneral}
         handleEditNote={handleEditNote}
         isOpen={isOpen}
         onClose={onClose}
@@ -99,7 +103,7 @@ const NoteCard = ({
       {categories.length > 0 && (
         <>
           <Divider margin={'0.9rem 0 0.1rem'}></Divider>
-          <Flex columnGap={'0.5rem'}>
+          <Flex marginTop={'1rem'} alignItems={'center'} columnGap={'0.5rem'}>
             <p>Categories: </p>
             {renderCategories()}
           </Flex>

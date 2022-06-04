@@ -1,5 +1,6 @@
 import { Response, Request } from 'express';
 import asyncHandler from 'express-async-handler';
+import Category from '../models/categoryModel';
 import Note from '../models/noteModel';
 import { searchUser } from './userController';
 
@@ -17,6 +18,15 @@ export const getNotesNotArchived = asyncHandler(
         updatedAt: 'desc',
       });
     res.json(notes);
+    return;
+  }
+);
+
+// @route GET /notes/categories
+export const getCategories = asyncHandler(
+  async (req: Request, res: Response) => {
+    const categories = await Category.find({}).select('-__v');
+    res.json(categories);
     return;
   }
 );
@@ -53,7 +63,10 @@ export const postNote = asyncHandler(async (req: Request, res: Response) => {
     categories,
     userId: user._id,
   });
-
+  await note.populate({
+    path: 'categories',
+    select: 'name',
+  });
   res.status(201).json(note.toJSON());
   return;
 });
@@ -67,6 +80,10 @@ export const putNote = asyncHandler(async (req: Request, res: Response) => {
   note.content = content ? content : note.content;
   note.archived = archived !== 'undefined' && archived;
   note.categories = categories ? categories : note.categories;
+  await note.populate({
+    path: 'categories',
+    select: 'name',
+  });
   await note.save();
   res.json(note);
   return;
@@ -87,9 +104,6 @@ const valiteNoteBody = (req: Request) => {
   if (!title) {
     throw new Error('A title is requiered.');
   }
-  // if (!categories) {
-  //   throw new Error('At least one category is requiered.');
-  // }
   if (!content) {
     throw new Error('A content is requiered.');
   }

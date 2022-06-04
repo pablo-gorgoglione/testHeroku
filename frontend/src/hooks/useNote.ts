@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { INote } from '../types';
+import { ICategory, INote } from '../types';
 
 const useNote = (prop_note: INote) => {
   const [note, setNote] = useState(prop_note);
@@ -16,7 +16,29 @@ const useNote = (prop_note: INote) => {
     setNote({ ...note, content: e.target.value });
   };
 
-  return { note, handleContentChange, handleTitleChange, reset };
+  const addCategory = (category: ICategory) => {
+    let tempNote = note;
+    tempNote.categories.push(category);
+    setNote({ ...note, categories: tempNote.categories });
+  };
+
+  const deleteCategory = (category: ICategory) => {
+    let tempNote = note;
+    tempNote.categories = tempNote.categories.filter(
+      (c) => c._id !== category._id
+    );
+
+    setNote({ ...note, categories: tempNote.categories });
+  };
+
+  return {
+    note,
+    handleContentChange,
+    handleTitleChange,
+    reset,
+    addCategory,
+    deleteCategory,
+  };
 };
 
 export default useNote;

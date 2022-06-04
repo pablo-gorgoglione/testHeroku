@@ -1,8 +1,8 @@
-import { Box, Button, Flex, useDisclosure } from '@chakra-ui/react';
+import { Box, Button, Flex, Select, useDisclosure } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { notesApi } from '../api';
 import NoteContext from '../context/noteContext';
-import { INote } from '../types';
+import { ICategory, INote } from '../types';
 import CreateModal from './CreateModal';
 import NoteCard from './NoteCard';
 
@@ -12,10 +12,14 @@ interface props {
 
 const LogedHome = ({ token }: props) => {
   const [archived, setArchived] = useState<boolean>(true);
+  const [notesFiltered, setNotesFiltered] = useState<INote[]>([]);
+  const [archivedNotesFiltered, setArchivedNotesFiltered] = useState<INote[]>(
+    []
+  );
 
   const { noteState, dispatch, handleEdit, handleCreate, handleDelete } =
     useContext(NoteContext);
-  const { notes, archivedNotes } = noteState;
+  const { notes, archivedNotes, categories } = noteState;
 
   //fetch notes when token is loaded
   useEffect(() => {
@@ -24,6 +28,8 @@ const LogedHome = ({ token }: props) => {
         dispatch({ type: 'SET_LOADING' });
         const notes = await notesApi.getNotes(token);
         const archivedNotes = await notesApi.getNotesArchived(token);
+        const categories = await notesApi.getCategories(token);
+        dispatch({ type: 'SET_CATEGORIES', payload: categories });
         dispatch({ type: 'SET_NOTES', payload: notes });
         dispatch({ type: 'SET_ARCHIVED_NOTES', payload: archivedNotes });
       } catch (error) {
@@ -35,7 +41,13 @@ const LogedHome = ({ token }: props) => {
     }
   }, [token, dispatch]);
 
-  /* ARREGLAR ESTOS ESTAN DE MAS */
+  useEffect(() => {
+    if (noteState.notes && noteState.archivedNotes) {
+      setNotesFiltered(noteState.notes);
+      setArchivedNotesFiltered(noteState.archivedNotes);
+    }
+  }, [noteState.notes, noteState.archivedNotes]);
+
   const handleEditLocal = (id: string, note: INote) => {
     handleEdit(id, note, token);
   };
@@ -44,19 +56,50 @@ const LogedHome = ({ token }: props) => {
     handleCreate(note, token);
   };
 
-  const handleDeleteLocal = (id: string) => {
-    handleDelete(id, token);
+  const handleDeleteLocal = (id: string, archived: boolean) => {
+    handleDelete(id, token, archived);
   };
 
   const handleToggleArchived = (note: INote) => {
     handleEdit(note._id, note, token);
   };
-  /* ARREGLAR ESTOS ESTAN DE MAS */
+
+  const handleFilterChange = (e: any) => {
+    let result = categories.find(
+      ({ name }) => name === e.target.value
+    ) as ICategory;
+    if (typeof result !== 'undefined') {
+      if (archived) {
+        let tempNotes: INote[] = [];
+        notesFiltered.forEach((n) => {
+          n.categories.forEach((c) => {
+            if (c._id === result._id) {
+              tempNotes.push(n);
+            }
+          });
+        });
+        setNotesFiltered(tempNotes);
+      } else {
+        let tempNotes: INote[] = [];
+        archivedNotesFiltered.forEach((n) => {
+          n.categories.forEach((c) => {
+            if (c._id === result._id) {
+              tempNotes.push(n);
+            }
+          });
+        });
+        setArchivedNotesFiltered(tempNotes);
+      }
+    } else {
+      setNotesFiltered(noteState.notes);
+    }
+  };
 
   const renderNoteList = () =>
-    notes.map((note) => {
+    notesFiltered.map((note) => {
       return (
         <NoteCard
+          categories={categories}
           handleDeleteLocal={handleDeleteLocal}
           handleEditNote={handleEditLocal}
           handleToggleArchived={handleToggleArchived}
@@ -68,9 +111,10 @@ const LogedHome = ({ token }: props) => {
     });
 
   const renderArchivedNoteList = () =>
-    archivedNotes.map((note) => {
+    archivedNotesFiltered.map((note) => {
       return (
         <NoteCard
+          categories={categories}
           handleDeleteLocal={handleDeleteLocal}
           handleEditNote={handleEditLocal}
           handleToggleArchived={handleToggleArchived}
@@ -85,7 +129,6 @@ const LogedHome = ({ token }: props) => {
     setArchived(!archived);
   };
 
-  //create modal handlers
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -96,6 +139,20 @@ const LogedHome = ({ token }: props) => {
         alignItems={'center'}
         columnGap={'3rem'}
       >
+        <Select
+          onChange={(e) => handleFilterChange(e)}
+          width={'300px'}
+          placeholder='No filter'
+        >
+          {categories.length > 0 &&
+            categories.map((c) => {
+              return (
+                <option key={c._id} value={c.name}>
+                  {c.name}
+                </option>
+              );
+            })}
+        </Select>
         <Button onClick={onOpen}>Create note</Button>
         <Button variant={'outline'} cursor={'pointer'} onClick={toggleArchived}>
           {archived ? 'Archived Notes >' : '< Notes'}
@@ -104,6 +161,7 @@ const LogedHome = ({ token }: props) => {
       <CreateModal
         isOpen={isOpen}
         onClose={onClose}
+        categories={categories}
         handleCreateLocal={handleCreateLocal}
       />
       <Box

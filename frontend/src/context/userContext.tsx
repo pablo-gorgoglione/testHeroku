@@ -41,7 +41,6 @@ export const UserProdiver = ({ children }: props) => {
         const user = await userApi.getOne(token.split(' ')[1]);
         dispatch({ type: 'SET_USER', payload: { ...user, token } });
       } catch (error) {
-        console.log(error);
         dispatch({ type: 'SET_ERROR', payload: 'Error trying to login' });
       }
     };
@@ -62,7 +61,6 @@ export const UserProdiver = ({ children }: props) => {
       dispatch({ type: 'SET_USER', payload: user });
       return true;
     } catch (error) {
-      console.log(error);
       dispatch({ type: 'SET_ERROR', payload: 'Error trying to login.' });
       return false;
     }
@@ -75,7 +73,6 @@ export const UserProdiver = ({ children }: props) => {
       dispatch({ type: 'SET_USER', payload: res });
       return true;
     } catch (error) {
-      console.log(error);
       dispatch({ type: 'SET_ERROR', payload: 'Error trying to register' });
       return false;
     }

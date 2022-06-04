@@ -1,8 +1,9 @@
-import { INote, NotesState } from '../types';
+import { ICategory, INote, NotesState } from '../types';
 
 export type NotesReducerActions =
   | { type: 'SET_NOTES'; payload: INote[] }
   | { type: 'SET_ARCHIVED_NOTES'; payload: INote[] }
+  | { type: 'SET_CATEGORIES'; payload: ICategory[] }
   | { type: 'SET_LOADING' }
   | { type: 'SET_ERROR'; payload: string }
   | { type: 'RESET' };
@@ -26,6 +27,13 @@ const notesReducer = (
         loading: false,
         archivedNotes: action.payload,
       };
+    case 'SET_CATEGORIES':
+      return {
+        ...state,
+        error: '',
+        loading: false,
+        categories: action.payload,
+      };
     case 'SET_LOADING':
       return {
         ...state,
@@ -42,6 +50,7 @@ const notesReducer = (
         loading: false,
         error: '',
         notes: [],
+        categories: [],
         archivedNotes: [],
       };
   }

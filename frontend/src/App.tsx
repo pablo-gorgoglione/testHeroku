@@ -14,12 +14,7 @@ export const App = () => {
         <UserProdiver>
           <NoteProvider>
             <Router>
-              <Flex
-                margin={'0% 7%'}
-                height={'100vh'}
-                // border={'1px solid red'}
-                flexDirection={'column'}
-              >
+              <Flex margin={'0% 7%'} height={'100vh'} flexDirection={'column'}>
                 <Navbar />
                 <Routes>
                   <Route path='/' element={<Home />} />

@@ -1,6 +1,6 @@
 import { createContext, useReducer } from 'react';
 import { notesApi } from '../api';
-import { INote, NotesState } from '../types';
+import { ICategory, INote, NotesState } from '../types';
 import notesReducer, { NotesReducerActions } from './noteReducer';
 
 interface INoteContext {
@@ -9,7 +9,7 @@ interface INoteContext {
   dispatch: React.Dispatch<NotesReducerActions>;
   handleEdit: (id: string, note: INote, token: string) => void;
   handleCreate: (note: INote, token: string) => void;
-  handleDelete: (id: string, token: string) => void;
+  handleDelete: (id: string, token: string, archived: boolean) => void;
 }
 
 const NoteContext = createContext<INoteContext>({} as INoteContext);
@@ -23,6 +23,7 @@ const INITIAL_STATE: NotesState = {
   loading: false,
   notes: [],
   archivedNotes: [],
+  categories: [],
 };
 export const NoteProvider = ({ children }: props) => {
   const [noteState, dispatch] = useReducer(notesReducer, INITIAL_STATE);
@@ -77,14 +78,17 @@ export const NoteProvider = ({ children }: props) => {
     dispatch({ type: 'SET_NOTES', payload: tempNotes });
   };
 
-  const handleDelete = async (id: string, token: string) => {
+  const handleDelete = async (id: string, token: string, archived: boolean) => {
     await notesApi.deleteNote(id, token);
     let tempNotes = noteState.notes;
-    tempNotes = noteState.notes.filter((n) => n._id !== id);
-    dispatch({ type: 'SET_NOTES', payload: tempNotes });
+    if (archived) {
+      tempNotes = noteState.archivedNotes.filter((n) => n._id !== id);
+      dispatch({ type: 'SET_ARCHIVED_NOTES', payload: tempNotes });
+    } else {
+      tempNotes = noteState.notes.filter((n) => n._id !== id);
+      dispatch({ type: 'SET_NOTES', payload: tempNotes });
+    }
   };
-
-  // const;
 
   return (
     <NoteContext.Provider

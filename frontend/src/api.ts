@@ -1,13 +1,13 @@
 import axios from 'axios';
-import { INote, RegisterUserForm, User } from './types';
+import { ICategory, INote, RegisterUserForm, User } from './types';
 
 const http = axios.create({
   headers: {
     'Content-type': 'application/json',
   },
 });
-// const apiUrl = 'https://ensolvers-pablo-gorgoglione.herokuapp.com/api';
-const apiUrl = 'http://localhost:4000/api';
+const apiUrl = 'https://ensolvers-pablo-gorgoglione.herokuapp.com/api';
+// const apiUrl = 'http://localhost:4000/api';
 const userEndPoint = `${apiUrl}/users`;
 
 export const userApi = {
@@ -40,12 +40,18 @@ export const notesApi = {
     });
     return res.data;
   },
+  getCategories: async (token: string): Promise<ICategory[]> => {
+    const res = await http.get(`${notesEndPoint}/categories`, {
+      headers: { Authorization: token },
+    });
+    return res.data;
+  },
 
   postNote: async (token: string, note: INote): Promise<INote> => {
-    const { content, title } = note;
+    const { content, title, categories } = note;
     const res = await http.post(
       `${notesEndPoint}/`,
-      { title, content },
+      { title, content, categories },
       {
         headers: { Authorization: token },
       }
@@ -54,10 +60,10 @@ export const notesApi = {
   },
 
   putNote: async (id: string, token: string, note: INote): Promise<INote> => {
-    const { content, title, archived } = note;
+    const { content, title, archived, categories } = note;
     const res = await http.put(
       `${notesEndPoint}/${id}`,
-      { title, content, archived },
+      { title, content, archived, categories },
       {
         headers: { Authorization: token },
       }

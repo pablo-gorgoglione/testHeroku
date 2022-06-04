@@ -35,4 +35,5 @@ export interface ICategory {
 export interface NotesState extends BaseState {
   notes: INote[];
   archivedNotes: INote[];
+  categories: ICategory[];
 }

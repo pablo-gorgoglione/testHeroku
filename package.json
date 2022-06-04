@@ -8,6 +8,7 @@
     "installBoth": "npm install && cd ./frontend && npm install",
     "buildFrontend": "cd ./frontend && npm run build",
     "startBackend": "cd ./backend && tsc  && node ./dist/app.js",
+    "testSeed": "cd ./backend && tsc && node ./dist/utils/seed.js && node ./dist/app.js",
     "startOne": "npm run installBoth && npm run buildFrontend && npm run startBackend"
   },
   "repository": {
