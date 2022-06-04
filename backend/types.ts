@@ -7,9 +7,11 @@ export interface INote {
   title: string;
   content: string;
   archived: boolean;
-  categories: Array<ICategory>;
+  categories: Array<String>;
+  userId: string;
 }
 
 export interface ICategory {
   name: string;
+  userId: string;
 }

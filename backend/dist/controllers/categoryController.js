@@ -15,19 +15,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedCategory = exports.deleteCategory = exports.postCategory = exports.getCategories = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const catModel_1 = __importDefault(require("../models/catModel"));
+const userController_1 = require("./userController");
 // @route GET /category/
 exports.getCategories = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const categories = yield catModel_1.default.find({});
+    const user = yield (0, userController_1.searchUser)(req);
+    const categories = yield catModel_1.default.find({ userId: user._id });
     res.json(categories);
     return;
 }));
 // @route POST /category/
 exports.postCategory = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield (0, userController_1.searchUser)(req);
     const { name } = req.body;
     if (!name) {
         throw new Error('A name is required for the category.');
     }
-    const category = yield catModel_1.default.create({ name });
+    const category = yield catModel_1.default.create({ name, userId: user._id });
     res.status(201).json(category.toJSON());
     return;
 }));

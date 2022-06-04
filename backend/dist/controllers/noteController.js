@@ -15,9 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.putNote = exports.postNote = exports.getNotesArchived = exports.getNotesNotArchived = void 0;
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const noteModel_1 = __importDefault(require("../models/noteModel"));
+const userController_1 = require("./userController");
 // @route GET /notes/
 exports.getNotesNotArchived = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const notes = yield noteModel_1.default.find({ archived: false })
+    const user = yield (0, userController_1.searchUser)(req);
+    const notes = yield noteModel_1.default.find({ archived: false, userId: user._id })
         .populate({
         path: 'categories',
         select: 'name',
@@ -30,25 +32,40 @@ exports.getNotesNotArchived = (0, express_async_handler_1.default)((req, res) =>
 }));
 // @route GET /notes/archived
 exports.getNotesArchived = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const notes = noteModel_1.default.find({ archived: true });
+    const user = yield (0, userController_1.searchUser)(req);
+    const notes = yield noteModel_1.default.find({ archived: true, userId: user._id })
+        .populate({
+        path: 'categories',
+        select: 'name',
+    })
+        .sort({
+        updatedAt: 'desc',
+    });
     res.json(notes);
     return;
 }));
 // @route POST /notes/
 exports.postNote = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { title, content, categories } = req.body;
+    const user = yield (0, userController_1.searchUser)(req);
     valiteNoteBody(req);
-    const note = yield noteModel_1.default.create({ title, content, categories });
+    const note = yield noteModel_1.default.create({
+        title,
+        content,
+        categories,
+        userId: user._id,
+    });
     res.status(201).json(note.toJSON());
     return;
 }));
 // @route PUT /notes/:id
 exports.putNote = (0, express_async_handler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, content, categories } = req.body;
+    const { title, content, categories, archived } = req.body;
     valiteNoteBody(req);
     const note = yield validateExistence(req.params.id);
     note.title = title ? title : note.title;
     note.content = content ? content : note.content;
+    note.archived = archived !== 'undefined' && archived;
     note.categories = categories ? categories : note.categories;
     yield note.save();
     res.json(note);

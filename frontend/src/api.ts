@@ -6,8 +6,8 @@ const http = axios.create({
     'Content-type': 'application/json',
   },
 });
-// const apiUrl = 'https://ensolvers-pablo-gorgoglione.herokuapp.com/api';
-const apiUrl = 'http://localhost:4000/api';
+const apiUrl = 'https://ensolvers-pablo-gorgoglione.herokuapp.com/api';
+// const apiUrl = 'http://localhost:4000/api';
 const userEndPoint = `${apiUrl}/users`;
 
 export const userApi = {
@@ -41,15 +41,34 @@ export const notesApi = {
     return res.data;
   },
 
-  putNote: async (id: string, token: string, note: INote): Promise<INote> => {
+  postNote: async (token: string, note: INote): Promise<INote> => {
     const { content, title } = note;
-    const res = await http.put(
-      `${notesEndPoint}/${id}`,
+    const res = await http.post(
+      `${notesEndPoint}/`,
       { title, content },
       {
         headers: { Authorization: token },
       }
     );
+    return res.data;
+  },
+
+  putNote: async (id: string, token: string, note: INote): Promise<INote> => {
+    const { content, title, archived } = note;
+    const res = await http.put(
+      `${notesEndPoint}/${id}`,
+      { title, content, archived },
+      {
+        headers: { Authorization: token },
+      }
+    );
+    return res.data;
+  },
+
+  deleteNote: async (id: string, token: string): Promise<INote> => {
+    const res = await http.delete(`${notesEndPoint}/${id}`, {
+      headers: { Authorization: token },
+    });
     return res.data;
   },
 

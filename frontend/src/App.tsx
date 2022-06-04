@@ -4,6 +4,8 @@ import { ChakraProvider, Flex, theme } from '@chakra-ui/react';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import { NoteProvider } from './context/noteContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
 
 export const App = () => {
   return (
@@ -21,9 +23,9 @@ export const App = () => {
                 <Navbar />
                 <Routes>
                   <Route path='/' element={<Home />} />
-                  {/* <Route path='/posts/:id' element={<PostPage />} /> */}
+                  <Route path='/login' element={<Login />} />
+                  <Route path='/register' element={<Register />} />
                 </Routes>
-                {/* <Footer /> */}
               </Flex>
             </Router>
           </NoteProvider>

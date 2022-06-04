@@ -1,11 +1,14 @@
 import { Response, Request } from 'express';
 import asyncHandler from 'express-async-handler';
 import Note from '../models/noteModel';
+import { searchUser } from './userController';
 
 // @route GET /notes/
 export const getNotesNotArchived = asyncHandler(
   async (req: Request, res: Response) => {
-    const notes = await Note.find({ archived: false })
+    const user = await searchUser(req);
+
+    const notes = await Note.find({ archived: false, userId: user._id })
       .populate({
         path: 'categories',
         select: 'name',
@@ -21,7 +24,16 @@ export const getNotesNotArchived = asyncHandler(
 // @route GET /notes/archived
 export const getNotesArchived = asyncHandler(
   async (req: Request, res: Response) => {
-    const notes = Note.find({ archived: true });
+    const user = await searchUser(req);
+
+    const notes = await Note.find({ archived: true, userId: user._id })
+      .populate({
+        path: 'categories',
+        select: 'name',
+      })
+      .sort({
+        updatedAt: 'desc',
+      });
     res.json(notes);
     return;
   }
@@ -30,9 +42,17 @@ export const getNotesArchived = asyncHandler(
 // @route POST /notes/
 export const postNote = asyncHandler(async (req: Request, res: Response) => {
   const { title, content, categories } = req.body;
+
+  const user = await searchUser(req);
+
   valiteNoteBody(req);
 
-  const note = await Note.create({ title, content, categories });
+  const note = await Note.create({
+    title,
+    content,
+    categories,
+    userId: user._id,
+  });
 
   res.status(201).json(note.toJSON());
   return;
@@ -40,11 +60,12 @@ export const postNote = asyncHandler(async (req: Request, res: Response) => {
 
 // @route PUT /notes/:id
 export const putNote = asyncHandler(async (req: Request, res: Response) => {
-  const { title, content, categories } = req.body;
+  const { title, content, categories, archived } = req.body;
   valiteNoteBody(req);
   const note = await validateExistence(req.params.id);
   note.title = title ? title : note.title;
   note.content = content ? content : note.content;
+  note.archived = archived !== 'undefined' && archived;
   note.categories = categories ? categories : note.categories;
   await note.save();
   res.json(note);

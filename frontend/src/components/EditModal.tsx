@@ -49,8 +49,10 @@ const EditModal = ({ isOpen, onClose, handleEditNote, note }: Props) => {
           />
         </ModalBody>
         <ModalFooter display={'flex'} justifyContent={'space-between'}>
-          <Button onClick={handleSave}>Save</Button>
           <Button onClick={onClose}>Close</Button>
+          <Button colorScheme='blue' onClick={handleSave}>
+            Save
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

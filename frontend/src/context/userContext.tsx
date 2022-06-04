@@ -63,7 +63,7 @@ export const UserProdiver = ({ children }: props) => {
       return true;
     } catch (error) {
       console.log(error);
-      dispatch({ type: 'SET_ERROR', payload: 'Error trying to login' });
+      dispatch({ type: 'SET_ERROR', payload: 'Error trying to login.' });
       return false;
     }
   };
