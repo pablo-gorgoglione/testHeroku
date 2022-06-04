@@ -6,8 +6,8 @@ const http = axios.create({
     'Content-type': 'application/json',
   },
 });
-const apiUrl = 'https://ensolvers-pablo-gorgoglione.herokuapp.com/api';
-// const apiUrl = 'http://localhost:4000/api';
+// const apiUrl = 'https://ensolvers-pablo-gorgoglione.herokuapp.com/api';
+const apiUrl = 'http://localhost:4000/api';
 const userEndPoint = `${apiUrl}/users`;
 
 export const userApi = {
